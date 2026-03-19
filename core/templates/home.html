@@ -1,0 +1,887 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════
+     GOOGLE FONTS + ICONS
+═══════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- ═══════════════════════════════════════════════════════════
+     GLOBAL DESIGN TOKENS
+═══════════════════════════════════════════════════════════ -->
+<style>
+  :root {
+    --gold:      #f5c518;
+    --gold-dim:  #c99d0e;
+    --gold-glow: rgba(245,197,24,0.18);
+    --ink:       #050505;
+    --ink-2:     #0d0d0d;
+    --ink-3:     #161616;
+    --ink-4:     #1f1f1f;
+    --smoke:     #2a2a2a;
+    --ash:       #555;
+    --fog:       #888;
+    --mist:      #bbb;
+    --white:     #f5f0e8;
+    --font-disp: 'Bebas Neue', sans-serif;
+    --font-serif:'DM Serif Display', serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --ease:      cubic-bezier(.22,.68,0,1.2);
+    --ease-out:  cubic-bezier(.16,1,.3,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor-dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform .1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: all .18s var(--ease-out);
+    opacity: .6;
+  }
+  body:hover .cursor-dot { transform: translate(-50%,-50%) scale(1); }
+  a:hover ~ .cursor-ring, button:hover ~ .cursor-ring { transform: translate(-50%,-50%) scale(2.2); opacity:1; }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: .025;
+    pointer-events: none;
+    z-index: 9997;
+  }
+
+  /* ── REVEAL UTILITY ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity .9s var(--ease-out), transform .9s var(--ease-out);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .22s; }
+  .reveal-delay-3 { transition-delay: .36s; }
+  .reveal-delay-4 { transition-delay: .5s; }
+
+  /* ── SECTION BASE ── */
+  .tzahu-section {
+    padding: 110px 24px;
+    position: relative;
+  }
+  .tzahu-section.alt { background: var(--ink-2); }
+  .container-inner { max-width: 1120px; margin: 0 auto; }
+
+  /* ── EYEBROW ── */
+  .eyebrow-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--gold); padding: 5px 14px;
+    border: 1px solid var(--gold-glow);
+    border-radius: 2px;
+    background: rgba(245,197,24,.05);
+    margin-bottom: 20px;
+  }
+  .eyebrow-tag::before {
+    content: '//';
+    opacity: .5;
+  }
+
+  /* ── SECTION HEADING ── */
+  .section-head { text-align: center; margin-bottom: 70px; }
+  .section-title {
+    font-family: var(--font-disp);
+    font-size: clamp(44px, 7vw, 86px);
+    letter-spacing: .03em;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 18px;
+  }
+  .section-title em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--gold);
+  }
+  .section-sub {
+    font-size: 17px;
+    color: var(--fog);
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.75;
+  }
+
+  /* ── GOLD LINE ── */
+  .gold-line {
+    width: 48px; height: 2px;
+    background: var(--gold);
+    margin: 18px auto 0;
+  }
+
+  /* ── CARDS ── */
+  .tzahu-card {
+    background: var(--ink-3);
+    border: 1px solid var(--smoke);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .35s, transform .4s var(--ease), box-shadow .4s;
+  }
+  .tzahu-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 0% 0%, var(--gold-glow) 0%, transparent 65%);
+    opacity: 0;
+    transition: opacity .4s;
+  }
+  .tzahu-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(245,197,24,.15);
+  }
+  .tzahu-card:hover::before { opacity: 1; }
+  .card-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); background: rgba(245,197,24,.09);
+    padding: 4px 10px; border-radius: 2px;
+    margin-bottom: 16px;
+  }
+  .tzahu-card h3 {
+    font-family: var(--font-serif);
+    font-size: 22px; color: var(--white);
+    margin-bottom: 14px;
+  }
+  .tzahu-card p, .tzahu-card .muted {
+    color: var(--fog);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .tzahu-card ul.list {
+    list-style: none;
+    padding: 0;
+  }
+  .tzahu-card ul.list li {
+    color: var(--mist);
+    font-size: 14.5px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--ink-4);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tzahu-card ul.list li::before {
+    content: '✦';
+    font-size: 9px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── GRID ── */
+  .tzahu-grid {
+    display: grid;
+    gap: 24px;
+  }
+  .tzahu-grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); }
+  .tzahu-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
+
+  /* ── STAT BLOCK ── */
+  .stat-block {
+    background: var(--ink-3);
+    border: 1px solid var(--smoke);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: border-color .35s, transform .4s var(--ease), box-shadow .4s;
+    position: relative; overflow: hidden;
+  }
+  .stat-block::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform .5s var(--ease-out);
+  }
+  .stat-block:hover { border-color: var(--gold-dim); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  .stat-block:hover::after { transform: scaleX(1); }
+  .stat-num {
+    font-family: var(--font-disp);
+    font-size: 56px; letter-spacing: .02em;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .stat-lbl {
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--fog);
+  }
+
+  /* ── QUOTE CARD ── */
+  .quote-card {
+    background: var(--ink-3);
+    border: 1px solid var(--smoke);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .35s, transform .4s var(--ease), box-shadow .4s;
+  }
+  .quote-card::before {
+    content: '"';
+    font-family: var(--font-serif);
+    font-size: 100px;
+    color: var(--gold);
+    opacity: .12;
+    position: absolute; top: -10px; left: 18px;
+    line-height: 1; pointer-events: none;
+    transition: opacity .4s;
+  }
+  .quote-card:hover { border-color: var(--gold-dim); transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+  .quote-card:hover::before { opacity: .22; }
+  .quote-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--white);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+  }
+  .quote-attr {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 700; font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    letter-spacing: .02em;
+    position: relative; overflow: hidden;
+    transition: transform .3s var(--ease), box-shadow .3s;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,.18);
+    transform: translateX(-101%);
+    transition: transform .45s var(--ease-out);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(245,197,24,.4); }
+  .btn-primary:hover::after { transform: translateX(0); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 600; font-size: 15px;
+    padding: 13px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--smoke);
+    transition: border-color .3s, background .3s, transform .3s var(--ease);
+  }
+  .btn-ghost:hover { border-color: var(--gold-dim); background: rgba(245,197,24,.07); transform: translateY(-3px); }
+
+  /* ── SOCIAL BUTTONS ── */
+  .social-strip { display: flex; gap: 12px; margin-top: 20px; }
+  .social-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 500;
+    padding: 9px 18px; border-radius: 40px;
+    text-decoration: none; color: var(--white);
+    border: 1px solid var(--smoke);
+    background: var(--ink-3);
+    transition: all .35s var(--ease);
+  }
+  .social-pill:hover { transform: translateY(-3px); }
+  .social-pill.ig:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-color: transparent; box-shadow: 0 8px 28px rgba(220,39,67,.4); }
+  .social-pill.li:hover { background: #0077b5; border-color: transparent; box-shadow: 0 8px 28px rgba(0,119,181,.4); }
+
+  /* ── CONTACT FORM ── */
+  .contact-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media(max-width:768px){ .contact-wrap { grid-template-columns: 1fr; } }
+  .contact-info { padding: 36px 28px; background: var(--ink-3); border: 1px solid var(--smoke); border-radius: 16px; }
+  .contact-info h3 { font-family: var(--font-disp); font-size: 28px; color: var(--white); margin-bottom: 24px; letter-spacing: .04em; }
+  .contact-detail { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .contact-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: rgba(245,197,24,.1); border: 1px solid var(--gold-glow);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 14px; flex-shrink: 0;
+  }
+  .contact-detail p { font-size: 14px; color: var(--mist); }
+  .contact-detail strong { color: var(--white); font-size: 13px; font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+
+  /* FORM */
+  .form-card { background: var(--ink-3); border: 1px solid var(--smoke); border-radius: 16px; padding: 36px 28px; }
+  .form-card p label {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--fog); display: block; margin-bottom: 8px;
+  }
+  .form-card p input,
+  .form-card p textarea,
+  .form-card p select {
+    width: 100%;
+    background: var(--ink-4);
+    border: 1px solid var(--smoke);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border-color .3s, box-shadow .3s;
+  }
+  .form-card p input:focus,
+  .form-card p textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  .form-card p textarea { min-height: 110px; resize: vertical; }
+  .submit-btn {
+    background: var(--gold); color: var(--ink);
+    font-family: var(--font-body); font-weight: 700; font-size: 15px;
+    padding: 14px 32px; border: none; border-radius: 8px;
+    cursor: pointer; letter-spacing: .02em;
+    position: relative; overflow: hidden;
+    transition: transform .3s var(--ease), box-shadow .3s;
+    width: 100%;
+  }
+  .submit-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,.2); transform: translateX(-101%);
+    transition: transform .45s var(--ease-out);
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(245,197,24,.4); }
+  .submit-btn:hover::after { transform: translateX(0); }
+  .flash { background: rgba(245,197,24,.15); border: 1px solid var(--gold-dim); border-radius: 8px; padding: 12px 16px; margin-top: 14px; color: var(--gold); font-size: 14px; }
+
+  /* ── CAROUSEL ── */
+  .carousel-outer { position: relative; overflow: hidden; border-radius: 16px; box-shadow: 0 32px 80px rgba(0,0,0,.6); }
+  .carousel-track-inner { display: flex; transition: transform .6s var(--ease-out); }
+  .carousel-track-inner .slide img { width: 100%; height: 480px; object-fit: cover; display: block; }
+  .carousel-track-inner .slide { min-width: 100%; }
+  .nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,0,0,.65); border: 1px solid var(--smoke);
+    color: var(--white); font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .3s, border-color .3s, transform .3s var(--ease);
+    z-index: 10;
+  }
+  .nav-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); transform: translateY(-50%) scale(1.12); }
+  .nav-btn.prev { left: 16px; }
+  .nav-btn.next { right: 16px; }
+  .dots-strip { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--smoke); transition: all .3s; cursor: pointer; }
+  .dot.active { width: 20px; border-radius: 3px; background: var(--gold); }
+
+  /* ── FEATURE STAT CARDS ── */
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .feat-card {
+    background: var(--ink-3); border: 1px solid var(--smoke);
+    border-radius: 14px; padding: 28px 24px;
+    position: relative; overflow: hidden;
+    transition: border-color .35s, transform .4s var(--ease), box-shadow .4s;
+  }
+  .feat-card:hover { border-color: var(--gold-dim); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .feat-card .feat-icon {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold); background: rgba(245,197,24,.09);
+    display: inline-block; padding: 4px 10px; border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  .feat-card p { color: var(--fog); font-size: 14.5px; line-height: 1.75; }
+
+  /* ── HORIZONTAL MARQUEE TICKER ── */
+  .ticker-wrap { overflow: hidden; border-top: 1px solid var(--smoke); border-bottom: 1px solid var(--smoke); padding: 14px 0; background: var(--ink-2); }
+  .ticker-inner { display: flex; white-space: nowrap; animation: ticker 28s linear infinite; }
+  .ticker-inner span { padding: 0 40px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+  .ticker-inner span::before { content: '✦ '; opacity: .6; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── MEDIA QUERIES ── */
+  @media (max-width: 768px) {
+    .tzahu-section { padding: 80px 20px; }
+    .section-title { font-size: 44px; }
+    .hero-h1 { font-size: 52px !important; }
+    .tzahu-grid-3, .tzahu-grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- CURSOR ELEMENTS -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<header id="home" style="
+  background: var(--ink);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative; overflow: hidden;">
+
+  <!-- Background grid -->
+  <div style="
+    position:absolute; inset:0;
+    background-image: linear-gradient(rgba(245,197,24,.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(245,197,24,.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  "></div>
+
+  <!-- Glow orbs -->
+  <div style="position:absolute; top:-10%; left:50%; transform:translateX(-50%); width:700px; height:700px; background:radial-gradient(circle, rgba(245,197,24,.07) 0%, transparent 65%); pointer-events:none;"></div>
+  <div style="position:absolute; bottom:-15%; left:20%; width:400px; height:400px; background:radial-gradient(circle, rgba(245,197,24,.05) 0%, transparent 65%); pointer-events:none;"></div>
+
+  <div style="max-width:860px; margin:0 auto; position:relative; z-index:2;">
+
+    <!-- Badge -->
+    <div id="hz-badge" class="eyebrow-tag reveal" style="margin-bottom:28px;">
+      Proven playbooks &nbsp;•&nbsp; 100% placement assurance
+    </div>
+
+    <!-- Headline -->
+    <h1 class="hero-h1 reveal reveal-delay-1" style="
+      font-family: var(--font-disp);
+      font-size: clamp(56px, 10vw, 112px);
+      letter-spacing: .03em;
+      line-height: .95;
+      color: var(--white);
+      margin-bottom: 28px;
+      min-height: 110px;">
+    </h1>
+
+    <!-- Sub-headline -->
+    <p class="reveal reveal-delay-2" style="font-size:18px; color:var(--fog); margin-bottom:40px; line-height:1.75; max-width:640px; margin-left:auto; margin-right:auto;">
+      We train teams, place talent, and design revenue systems for entrepreneurs,
+      freshers, and growing companies. Scripts, cadences, and strategy — delivered.
+    </p>
+
+    <!-- CTAs -->
+    <div class="reveal reveal-delay-3" style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:36px;">
+      <a href="#contact" class="btn-primary">Book Free Consultation <span>→</span></a>
+      <a href="#programs" class="btn-ghost">Explore Programs</a>
+    </div>
+
+    <!-- Trust bar -->
+    <div class="reveal reveal-delay-4" style="display:flex; align-items:center; justify-content:center; gap:28px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--fog);">
+        <span style="color:var(--gold);">★★★★★</span> Trusted by 500+ entrepreneurs
+      </div>
+      <div style="width:1px; height:16px; background:var(--smoke);"></div>
+      <div style="font-size:13px; color:var(--fog);">14,000+ LinkedIn network</div>
+      <div style="width:1px; height:16px; background:var(--smoke);"></div>
+      <div style="font-size:13px; color:var(--fog);">400+ Team trainings</div>
+    </div>
+
+  </div>
+
+  <!-- Scroll indicator -->
+  <div style="position:absolute; bottom:36px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; opacity:.5;">
+    <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--fog);"></span>
+    <div style="width:1px; height:40px; background:linear-gradient(to bottom, var(--gold), transparent);"></div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span>Hunter-Class Sales Engine</span>
+    <span>100% Placement Assurance</span>
+    <span>AI Automation Systems</span>
+    <span>Revenue by Design</span>
+    <span>500+ Entrepreneurs Coached</span>
+    <span>6.8× Pipeline Lift</span>
+    <span>CRM Development</span>
+    <span>Team Training & Placement</span>
+    <!-- duplicate for seamless loop -->
+    <span>Hunter-Class Sales Engine</span>
+    <span>100% Placement Assurance</span>
+    <span>AI Automation Systems</span>
+    <span>Revenue by Design</span>
+    <span>500+ Entrepreneurs Coached</span>
+    <span>6.8× Pipeline Lift</span>
+    <span>CRM Development</span>
+    <span>Team Training & Placement</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     CAROUSEL
+═══════════════════════════════════════════════════════════ -->
+<section class="tzahu-section alt">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">Highlights</div>
+      <h2 class="section-title">What it looks like <em>in action</em></h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="carousel-outer reveal reveal-delay-1">
+      <div class="carousel-track-inner" id="carTrack">
+        {% for s in slides %}
+          <div class="slide"><img src="{{ s.image.url }}" alt="{{ s.alt_text|default:'Slide' }}"/></div>
+        {% empty %}
+          <div class="slide" style="min-width:100%; height:340px; display:flex; align-items:center; justify-content:center; background:var(--ink-3); color:var(--fog); font-family:var(--font-mono); font-size:13px; letter-spacing:.12em;">
+            NO SLIDES YET — UPLOAD IN ADMIN
+          </div>
+        {% endfor %}
+      </div>
+      <button class="nav-btn prev" id="carPrev">‹</button>
+      <button class="nav-btn next" id="carNext">›</button>
+    </div>
+    <div class="dots-strip" id="carDots"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROGRAMS
+═══════════════════════════════════════════════════════════ -->
+<section id="programs" class="tzahu-section">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">Signature Programs</div>
+      <h2 class="section-title">Choose your <em>track</em></h2>
+      <p class="section-sub">Pick the path that matches your current stage.</p>
+      <div class="gold-line"></div>
+    </div>
+    <div class="tzahu-grid tzahu-grid-3">
+      {% for p in programs %}
+        <div class="tzahu-card reveal reveal-delay-{{ forloop.counter }}">
+          <div class="card-tag">{{ p.tag }}</div>
+          <h3>{{ p.title }}</h3>
+          <ul class="list">
+            {% for pt in p.points %}<li>{{ pt }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICES / WHAT WE DO
+═══════════════════════════════════════════════════════════ -->
+<section id="services" class="tzahu-section alt">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">What We Do</div>
+      <h2 class="section-title">Systems that turn <em>effort into results</em></h2>
+      <p class="section-sub">From zero-to-one to scale, we install the habits and tools that create consistent revenue.</p>
+      <div class="gold-line"></div>
+    </div>
+    <div class="feat-grid">
+      {% for f in features %}
+        <div class="feat-card reveal reveal-delay-{{ forloop.counter }}">
+          <div class="feat-icon">{{ f.title }}</div>
+          <p>{{ f.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SOLUTIONS
+═══════════════════════════════════════════════════════════ -->
+<section id="solutions" class="tzahu-section">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">Growth & Technology</div>
+      <h2 class="section-title">Modern tools for <em>modern businesses</em></h2>
+      <p class="section-sub">Beyond sales training, we help companies build digital infrastructure, automation, and brand systems that accelerate growth.</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="tzahu-grid tzahu-grid-3">
+      <div class="tzahu-card reveal reveal-delay-1">
+        <div class="card-tag">Creative & Branding</div>
+        <p class="muted">Build a strong brand identity with strategic design, messaging, and visual storytelling that connects with your audience.</p>
+      </div>
+      <div class="tzahu-card reveal reveal-delay-2">
+        <div class="card-tag">Video Editing & Motion</div>
+        <p class="muted">High-quality promotional videos, reels, and motion graphics designed to increase engagement and brand visibility.</p>
+      </div>
+      <div class="tzahu-card reveal reveal-delay-3">
+        <div class="card-tag">Digital Marketing</div>
+        <p class="muted">Data-driven campaigns across social media, Google Ads, and content marketing to generate leads and sales.</p>
+      </div>
+      <div class="tzahu-card reveal reveal-delay-1">
+        <div class="card-tag">AI Automation Systems</div>
+        <p class="muted">Automate repetitive tasks using AI agents, workflow automation, and intelligent business tools.</p>
+      </div>
+      <div class="tzahu-card reveal reveal-delay-2">
+        <div class="card-tag">CRM Development</div>
+        <p class="muted">Custom CRM systems to manage leads, track pipelines, and optimize your sales process end-to-end.</p>
+      </div>
+      <div class="tzahu-card reveal reveal-delay-3">
+        <div class="card-tag">IVR & Smart Call Systems</div>
+        <p class="muted">Intelligent call routing, automated voice assistants, and IVR systems to handle customer interactions efficiently.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESULTS
+═══════════════════════════════════════════════════════════ -->
+<section id="results" class="tzahu-section alt">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">Proof</div>
+      <h2 class="section-title">Outcomes over <em>opinions</em></h2>
+      <p class="section-sub">Wins from the field — not theory.</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="tzahu-grid tzahu-grid-4" style="margin-bottom:48px;">
+      <div class="stat-block reveal reveal-delay-1">
+        <span class="stat-num" data-target="500">0</span>
+        <div class="stat-lbl">Entrepreneurs coached</div>
+      </div>
+      <div class="stat-block reveal reveal-delay-2">
+        <span class="stat-num" style="font-size:44px;" data-target="6.8" data-dec="true">0</span>
+        <div class="stat-lbl">Avg. pipeline lift</div>
+      </div>
+      <div class="stat-block reveal reveal-delay-3">
+        <span class="stat-num" data-target="100">0</span>
+        <div class="stat-lbl">Placement assurance</div>
+      </div>
+      <div class="stat-block reveal reveal-delay-4">
+        <span class="stat-num" data-target="400">0</span>
+        <div class="stat-lbl">Team trainings</div>
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="tzahu-grid tzahu-grid-3">
+      {% for t in testimonials %}
+        <div class="quote-card reveal reveal-delay-{{ forloop.counter }}">
+          <p class="quote-text">{{ t.quote }}</p>
+          <div class="quote-attr">— {{ t.name }}{% if t.role %}, {{ t.role }}{% endif %}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════════════════════════ -->
+<section id="contact" class="tzahu-section">
+  <div class="container-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow-tag">Get In Touch</div>
+      <h2 class="section-title">Let's build something <em>legendary</em></h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="contact-wrap">
+      <!-- Info side -->
+      <div class="contact-info reveal">
+        <h3>Reach out directly</h3>
+
+        <div class="contact-detail">
+          <div class="contact-icon"><i class="fa fa-phone"></i></div>
+          <div>
+            <strong>Phone</strong>
+            <p>{{ SITE.phone|default:'+91 7736391567' }}</p>
+          </div>
+        </div>
+
+        <div class="contact-detail">
+          <div class="contact-icon"><i class="fa fa-envelope"></i></div>
+          <div>
+            <strong>Email</strong>
+            <p>{{ SITE.email|default:'ceo@tzahu.com' }}</p>
+          </div>
+        </div>
+
+        <div class="contact-detail">
+          <div class="contact-icon"><i class="fa fa-location-dot"></i></div>
+          <div>
+            <strong>Location</strong>
+            <p>{{ SITE.location|default:'Kochi • Kerala • India' }}</p>
+          </div>
+        </div>
+
+        <div class="social-strip">
+          <a href="{% if SITE.instagram_url %}{{ SITE.instagram_url }}{% else %}https://instagram.com/tza.hu{% endif %}" target="_blank" class="social-pill ig">
+            <i class="fab fa-instagram"></i> Instagram
+          </a>
+          <a href="{% if SITE.linkedin_url %}{{ SITE.linkedin_url }}{% else %}https://www.linkedin.com/in/akhilthetrainer/{% endif %}" target="_blank" class="social-pill li">
+            <i class="fab fa-linkedin"></i> LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Form side -->
+      <form class="form-card reveal reveal-delay-1" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="submit-btn" type="submit">Request Callback →</button>
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════ -->
+<script>
+/* ── CURSOR ── */
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  dot.style.left  = e.clientX + 'px'; dot.style.top  = e.clientY + 'px';
+  ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.opacity = '1'; });
+  el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '.6'; });
+});
+
+/* ── HERO TYPEWRITER ── */
+const heroH1 = document.querySelector('.hero-h1');
+const heroText = "Build a hunter-class sales engine.";
+let heroIdx = 0;
+function typeHero() {
+  if (heroIdx < heroText.length) {
+    heroH1.textContent += heroText[heroIdx++];
+    setTimeout(typeHero, 30);
+  }
+}
+window.addEventListener('load', () => {
+  setTimeout(typeHero, 600);
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.classList.add('visible'); // initial reveals for above-fold
+  });
+});
+
+/* ── SCROLL REVEAL ── */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ── COUNTER ANIMATION ── */
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const isDec = el.dataset.dec === 'true';
+  const suffix = el.closest('.stat-block').querySelector('.stat-lbl').textContent.trim() === 'Placement assurance' ? '%' : isDec ? '×' : '+';
+  let start = 0; const dur = 1600; const step = 16;
+  const inc = target / (dur / step);
+  const timer = setInterval(() => {
+    start = Math.min(start + inc, target);
+    el.textContent = isDec ? start.toFixed(1) + suffix : Math.floor(start) + suffix;
+    if (start >= target) clearInterval(timer);
+  }, step);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCounter(e.target);
+      counterObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num[data-target]').forEach(el => counterObserver.observe(el));
+
+/* ── CAROUSEL ── */
+(function() {
+  const track = document.getElementById('carTrack');
+  if (!track) return;
+  const slides = track.querySelectorAll('.slide');
+  if (!slides.length) return;
+  const dotsWrap = document.getElementById('carDots');
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => go(i);
+    dotsWrap.appendChild(d);
+  });
+
+  function go(n) {
+    cur = (n + slides.length) % slides.length;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  document.getElementById('carPrev').onclick = () => go(cur - 1);
+  document.getElementById('carNext').onclick = () => go(cur + 1);
+  setInterval(() => go(cur + 1), 4200);
+})();
+</script>
+
+{% endblock %}

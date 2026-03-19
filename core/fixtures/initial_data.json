@@ -1,0 +1,154 @@
+[
+  {
+    "model": "core.sitesetting",
+    "pk": 1,
+    "fields": {
+      "site_name": "TZaHu",
+      "tagline": "The Sales Hunter",
+      "primary_color": "#000000",
+      "accent_color": "#f5c518",
+      "text_color": "#eaeaea",
+      "phone": "+91 • Available on request",
+      "email": "hello@tzahu.com",
+      "location": "Kochi • Kerala • India",
+      "instagram_url": "https://www.instagram.com/tza.hu/",
+      "linkedin_url": "",
+      "youtube_url": "",
+      "hero_badge": "Proven playbooks • 100% placement support",
+      "hero_headline": "Build a hunter-class sales engine.",
+      "hero_subheadline": "We train teams, place talent, and design revenue systems for entrepreneurs, freshers, and growing companies. Scripts, cadences, and strategy—delivered.",
+      "cta_primary_text": "Get Free Audit →",
+      "cta_secondary_text": "Explore Programs",
+      "footer_text": "All rights reserved."
+    }
+  },
+  {
+    "model": "core.program",
+    "pk": 1,
+    "fields": {
+      "tag": "For Entrepreneurs",
+      "title": "Business Lab",
+      "points_text": "Sales, Marketing, Ops, Finance, Team Training and Individual Training.\nAI tools for lean teams\nOffer design & pricing psychology\nImprove the sales with smarter training and strategy.",
+      "order": 1
+    }
+  },
+  {
+    "model": "core.program",
+    "pk": 2,
+    "fields": {
+      "tag": "For SDRs/BDAs",
+      "title": "The Sales Hunter – Pro Track",
+      "points_text": "Cold calls & meeting frameworks\nFollow-up cadences that convert\nObjection handling playbook\nHow to work smarter and not harder.\nHow to get Faster growth in Career.",
+      "order": 2
+    }
+  },
+  {
+    "model": "core.program",
+    "pk": 3,
+    "fields": {
+      "tag": "For Freshers & Career Gaps",
+      "title": "Career Re-Start",
+      "points_text": "Placement-focused skill sprints\nProjects, mock panels, referrals\nLinkedIn & Portfolio upgrades\nCold calls & meeting frameworks\nFollow-up cadences that convert\nObjection handling playbook",
+      "order": 3
+    }
+  },
+  {
+    "model": "core.feature",
+    "pk": 1,
+    "fields": {
+      "title": "Sales Training",
+      "text": "Modern call pitch, objection handling, negotiation, closing, and pipeline rituals.",
+      "order": 1
+    }
+  },
+  {
+    "model": "core.feature",
+    "pk": 2,
+    "fields": {
+      "title": "Business Strategy",
+      "text": "Market analysis, GTM, offers, and forecasting for predictable revenue.",
+      "order": 2
+    }
+  },
+  {
+    "model": "core.feature",
+    "pk": 3,
+    "fields": {
+      "title": "100% Placement Support",
+      "text": "CV crafting, mock interviews, referrals, and hiring connects.",
+      "order": 3
+    }
+  },
+  {
+    "model": "core.feature",
+    "pk": 4,
+    "fields": {
+      "title": "Entrepreneur Playbooks",
+      "text": "Operations, finance basics, hiring, SOPs, and automation.",
+      "order": 4
+    }
+  },
+  {
+    "model": "core.plan",
+    "pk": 1,
+    "fields": {
+      "name": "Starter",
+      "price_label": "₹15,000 / month",
+      "highlight": false,
+      "perks_text": "1 team seat\nWeekly group coaching\nCold-call scripts\nBasic pipeline templates",
+      "order": 1
+    }
+  },
+  {
+    "model": "core.plan",
+    "pk": 2,
+    "fields": {
+      "name": "Growth (Most Popular)",
+      "price_label": "₹50,000 / month",
+      "highlight": true,
+      "perks_text": "Up to 5 seats\nCustom pitches by industry\nFollow-up cadences\nInterview + placement assistance",
+      "order": 2
+    }
+  },
+  {
+    "model": "core.plan",
+    "pk": 3,
+    "fields": {
+      "name": "Scale",
+      "price_label": "Custom",
+      "highlight": false,
+      "perks_text": "Onsite bootcamps\nHiring & team-building\nSOPs + CRM setup\nQuarterly strategy reviews",
+      "order": 3
+    }
+  },
+  {
+    "model": "core.testimonial",
+    "pk": 1,
+    "fields": {
+      "name": "Muhammed Jarshan",
+      "role": "Best Performer – Sales Trainee",
+      "quote": "The follow-up system alone 3×'d my conversions. Practical, no fluff—exact scripts and calendars.",
+      "order": 1
+    }
+  },
+  {
+    "model": "core.testimonial",
+    "pk": 2,
+    "fields": {
+      "name": "Thomas",
+      "role": "Director, Lead College Palakkad",
+      "quote": "Business Lab brought 100+ entrepreneurs under one roof; the structure made execution plug-and-play.",
+      "order": 2
+    }
+  },
+  {
+    "model": "core.testimonial",
+    "pk": 3,
+    "fields": {
+      "name": "Knowledge Bazar",
+      "role": "Study Abroad Agency",
+      "quote": "From hiring to closing—TZaHu built our entire sales engine and playbooks end-to-end.",
+      "order": 3
+    }
+  }
+]

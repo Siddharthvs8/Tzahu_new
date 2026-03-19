@@ -1,0 +1,282 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="static/images/Asset_10-removebg-preview.png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ SITE.site_name|default:'TZaHu' }} — {{ SITE.tagline|default:'The Sales Hunter' }}</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <style>
+    :root {
+      --gold: {{ SITE.accent_color|default:'#f5c518' }};
+      --dark: {{ SITE.primary_color|default:'#000000' }};
+      --text: {{ SITE.text_color|default:'#eaeaea' }};
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #fff;
+    }
+
+    /* === Navbar === */
+    nav {
+      background-color: #111;
+      padding: 15px 25px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand img {
+      height: 50px;
+      width: auto;
+    }
+
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    /* CTA buttons */
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-cta a {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #111;
+    }
+
+    .btn-dark {
+      background: #333;
+      color: #fff;
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    /* Mobile Menu */
+    @media (max-width: 900px) {
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links.mobile-active,
+      .nav-cta.mobile-active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        background: #000;
+        padding: 20px;
+        width: 100%;
+      }
+
+      .nav-container {
+        flex-wrap: nowrap;
+      }
+    }
+
+    /* === Footer === */
+    .footer {
+      background: #111;
+      color: #ccc;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .brand-pack {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .brand-badge img {
+      width: 60px;
+      height: auto;
+    }
+
+    .brand-name {
+      font-weight: 600;
+      color: var(--gold);
+      font-size: 18px;
+    }
+
+    .brand-sub {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .muted {
+      font-size: 14px;
+      color: #999;
+    }
+
+    @media (max-width: 600px) {
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .brand-pack {
+        flex-direction: column;
+      }
+
+      .brand-badge img {
+        width: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <!-- Brand -->
+      <a href="/" class="brand">
+        {% if SITE.logo %}
+          <img src="{{ SITE.logo.url }}" alt="logo"/>
+        {% else %}
+          <span style="font-weight:bold;">TZ</span>
+        {% endif %}
+      </a>
+
+      <!-- Hamburger (visible on mobile) -->
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="nav-links" id="nav-links">
+        <a href="#programs">Programs</a>
+        <a href="#services">Services</a>
+        <a href="#results">Results</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="nav-cta" id="nav-cta">
+        <a href="#contact" class="btn-gold">Book Your Free Consultation →</a>
+        <a href="#programs" class="btn-dark">Explore Programs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  {% block content %}{% endblock %}
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="brand-pack">
+        <div class="brand-badge">
+          <img src="{% static 'images/icon-removebg-preview.png' %}" alt="logo">
+        </div>
+        <div>
+          <div class="brand-name">{{ SITE.site_name|default:'TZaHu' }}</div>
+          <div class="brand-sub">{{ SITE.tagline|default:'The Sales Hunter' }}</div>
+        </div>
+      </div>
+      <div class="muted">
+        © {% now 'Y' %} {{ SITE.site_name|default:'TZaHu' }}.
+        {{ SITE.footer_text|default:'All rights reserved.' }}
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    const navCta = document.getElementById('nav-cta');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('mobile-active');
+      navCta.classList.toggle('mobile-active');
+    });
+  </script>
+
+  <script src="{% static 'js/carousel.js' %}"></script>
+</body>
+</html>
+
