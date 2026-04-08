@@ -12,11 +12,10 @@ def trigger_webhook_automation(form_data, webhook_url, service_name="Automation"
         return False
     
     try:
-        payload = {
-            "source": "TZaHu Landing Page",
-            "service": service_name,
-            "data": form_data
-        }
+        # Create a flat payload to match Google Apps Script expectations
+        payload = form_data.copy()
+        payload["source"] = "TZaHu Landing Page"
+        payload["service"] = service_name
         
         response = requests.post(
             webhook_url, 
