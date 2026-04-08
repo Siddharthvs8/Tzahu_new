@@ -231,6 +231,9 @@
         <a href="#programs">Programs</a>
         <a href="#services">Services</a>
         <a href="#results">Results</a>
+        {% if user.is_superuser %}
+          <a href="{% url 'admin_dashboard' %}" style="color: var(--gold); font-weight: bold;">Dashboard</a>
+        {% endif %}
         <a href="#contact">Contact</a>
       </div>
 

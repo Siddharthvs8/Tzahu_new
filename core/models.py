@@ -25,6 +25,11 @@ class SiteSetting(models.Model):
 
     footer_text = models.CharField(max_length=200, blank=True, default='All rights reserved.')
 
+    # Automation Settings
+    whatsapp_number = models.CharField(max_length=30, blank=True, help_text='Admin number for WhatsApp lead alerts')
+    whatsapp_webhook_url = models.URLField(blank=True, help_text='Webhook URL for WhatsApp automation (Twilio/Interakt/etc.)')
+    google_sheets_webhook_url = models.URLField(blank=True, help_text='Webhook URL for Google Sheets automation (Zapier/Make/AppsScript)')
+
     class Meta:
         verbose_name = 'Site Setting (create exactly one)'
         verbose_name_plural = 'Site Setting'

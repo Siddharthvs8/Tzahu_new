@@ -9,6 +9,10 @@ class SiteSettingAdmin(admin.ModelAdmin):
         ('Socials', {'fields': ('instagram_url','linkedin_url','youtube_url')}),
         ('Hero', {'fields': ('hero_badge','hero_headline','hero_subheadline','cta_primary_text','cta_secondary_text')}),
         ('Footer', {'fields': ('footer_text',)}),
+        ('Automation', {
+            'fields': ('whatsapp_number', 'whatsapp_webhook_url', 'google_sheets_webhook_url'),
+            'description': 'Configure external lead sync here.'
+        }),
     )
 
 @admin.register(CarouselImage)

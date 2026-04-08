@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --glass: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --gold: #f5c518;
+        --gold-glow: rgba(245, 197, 24, 0.15);
+        --ink: #050505;
+        --white: #f5f0e8;
+    }
+
+    .error-page {
+        min-height: 100vh;
+        background: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .error-bg {
+        position: absolute; inset: 0;
+        background-image: linear-gradient(rgba(245,197,24,.03) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(245,197,24,.03) 1px, transparent 1px);
+        background-size: 80px 80px;
+        mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 100%);
+    }
+
+    .error-card {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(12px);
+        padding: 60px 40px;
+        border-radius: 24px;
+        max-width: 600px;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+
+    .error-code {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 140px;
+        line-height: 1;
+        color: var(--gold);
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 40px var(--gold-glow);
+    }
+
+    .error-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 32px;
+        font-style: italic;
+        color: var(--white);
+        margin-bottom: 15px;
+    }
+
+    .error-msg {
+        font-family: 'Outfit', sans-serif;
+        font-size: 17px;
+        color: #aaa;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    .home-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--gold);
+        color: var(--ink);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        padding: 16px 36px;
+        border-radius: 12px;
+        text-decoration: none;
+        letter-spacing: 0.05em;
+        transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px var(--gold-glow);
+    }
+
+    .home-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px var(--gold-glow);
+    }
+
+    .error-line {
+        width: 60px;
+        height: 2px;
+        background: var(--gold);
+        margin: 0 auto 30px;
+    }
+</style>
+
+<div class="error-page">
+    <div class="error-bg"></div>
+    <div class="error-card">
+        <div class="error-code">500</div>
+        <div class="error-line"></div>
+        <h1 class="error-title">Technical glitch.</h1>
+        <p class="error-msg">
+            Our systems encountered an unexpected glitch while processing your request. 
+            We're currently investigating to get the pipeline back on track.
+        </p>
+        <a href="/" class="home-btn" style="background: #333; color: white;">
+            Try Again <i class="fas fa-rotate-right"></i>
+        </a>
+        <a href="/" class="home-btn" style="margin-left: 10px;">
+            Return to Base <i class="fas fa-home"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
