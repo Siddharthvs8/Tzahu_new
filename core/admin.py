@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SiteSetting, CarouselImage, Program, Feature, Plan, Testimonial, ContactSubmission
+from .models import SiteSetting, CarouselImage, Program, Feature, Plan, Testimonial, ContactSubmission, Event, Speaker, BrochureLead
 
 @admin.register(SiteSetting)
 class SiteSettingAdmin(admin.ModelAdmin):
@@ -48,4 +48,31 @@ class TestimonialAdmin(admin.ModelAdmin):
 @admin.register(ContactSubmission)
 class ContactSubmissionAdmin(admin.ModelAdmin):
     list_display = ('name','email','phone','created_at')
+    readonly_fields = ('created_at',)
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'location', 'price', 'early_bird_price', 'early_bird_deadline')
+    search_fields = ('title', 'description', 'detailed_description')
+    list_filter = ('date',)
+    filter_horizontal = ('speakers',)
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'detailed_description', 'date', 'location', 'image', 'speakers', 'brochure')
+        }),
+        ('Pricing & Offers', {
+            'fields': ('price', 'early_bird_price', 'early_bird_deadline')
+        }),
+    )
+
+@admin.register(Speaker)
+class SpeakerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'role', 'company')
+    search_fields = ('name', 'company', 'role')
+
+@admin.register(BrochureLead)
+class BrochureLeadAdmin(admin.ModelAdmin):
+    list_display = ('name', 'phone', 'event', 'created_at')
+    list_filter = ('event', 'created_at')
+    search_fields = ('name', 'phone', 'event__title')
     readonly_fields = ('created_at',)

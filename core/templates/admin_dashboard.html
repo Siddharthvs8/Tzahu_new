@@ -246,6 +246,18 @@
                 <span class="stat-value">{{ counts.slides }}</span>
                 <span class="stat-label">Carousel Views</span>
             </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ counts.events }}</span>
+                <span class="stat-label">Events</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ counts.speakers }}</span>
+                <span class="stat-label">Speakers</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ counts.brochure_leads }}</span>
+                <span class="stat-label">Brochure Leads</span>
+            </div>
         </div>
 
         <!-- RECENT SUBMISSIONS -->
@@ -273,6 +285,35 @@
                     {% empty %}
                     <tr>
                         <td colspan="5" style="text-align: center; color: #666; padding: 40px;">No submissions found yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RECENT BROCHURE DOWNLOADS / EVENT SUBMISSIONS -->
+        <div class="section-title" style="margin-top: 50px;">Recent Brochure <em>Downloads</em></div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Event Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in recent_event_submissions %}
+                    <tr>
+                        <td class="date-text">{{ lead.created_at|date:"M d, Y" }}</td>
+                        <td><strong>{{ lead.name }}</strong></td>
+                        <td><span class="badge">{{ lead.phone }}</span></td>
+                        <td>{{ lead.event.title }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #666; padding: 40px;">No brochure downloads recorded yet.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -308,6 +349,27 @@
                 <div class="action-info">
                     <h4>Site Settings</h4>
                     <p>Branding, colors, and global content</p>
+                </div>
+            </a>
+            <a href="/admin/core/event/" class="action-card">
+                <div class="action-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="action-info">
+                    <h4>Manage Events</h4>
+                    <p>Schedule and update events</p>
+                </div>
+            </a>
+            <a href="/admin/core/speaker/" class="action-card">
+                <div class="action-icon"><i class="fas fa-microphone"></i></div>
+                <div class="action-info">
+                    <h4>Manage Speakers</h4>
+                    <p>Add and edit event speakers</p>
+                </div>
+            </a>
+            <a href="/admin/core/brochurelead/" class="action-card">
+                <div class="action-icon"><i class="fas fa-file-download"></i></div>
+                <div class="action-info">
+                    <h4>Brochure Leads</h4>
+                    <p>View event submission details</p>
                 </div>
             </a>
         </div>

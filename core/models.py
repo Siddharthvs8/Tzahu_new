@@ -112,3 +112,47 @@ class ContactSubmission(models.Model):
 
     def __str__(self):
         return f'{self.name} <{self.email}>'
+
+class Speaker(models.Model):
+    name = models.CharField(max_length=120)
+    role = models.CharField(max_length=120, blank=True, help_text="e.g. CEO, Founder, Lead Sales")
+    company = models.CharField(max_length=120, blank=True, help_text="Company name")
+    bio = models.TextField(blank=True)
+    image = models.ImageField(upload_to='speakers/', blank=True, null=True)
+    linkedin_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    detailed_description = models.TextField(blank=True, help_text="Detailed information about the event.")
+    date = models.DateTimeField()
+    location = models.CharField(max_length=200, blank=True)
+    image = models.ImageField(upload_to='events/', blank=True, null=True)
+    
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Standard price. Set to 0 for free events.")
+    early_bird_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Discounted early bird price.")
+    early_bird_deadline = models.DateTimeField(blank=True, null=True, help_text="Deadline for the early bird offer.")
+    
+    speakers = models.ManyToManyField(Speaker, blank=True, related_name='events')
+    brochure = models.FileField(upload_to='brochures/', blank=True, null=True, help_text="Upload a PDF brochure for this event.")
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return self.title
+
+class BrochureLead(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='brochure_leads')
+    name = models.CharField(max_length=120)
+    phone = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} — {self.phone} (Event: {self.event.title})"

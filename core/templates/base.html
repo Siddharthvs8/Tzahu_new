@@ -22,31 +22,11 @@
        DESIGN TOKENS (sync with home.html)
     ════════════════════════════════════════════ */
     :root {
-      --gold: {
-          {
-          SITE.accent_color|default: '#f5c518'
-        }
-      }
-
-      ;
+      --gold: {{ SITE.accent_color|default:'#f5c518' }};
       --gold-dim: #c99d0e;
       --gold-glow: rgba(245, 197, 24, 0.14);
-
-      --dark: {
-          {
-          SITE.primary_color|default: '#000000'
-        }
-      }
-
-      ;
-
-      --text: {
-          {
-          SITE.text_color|default: '#eaeaea'
-        }
-      }
-
-      ;
+      --dark: {{ SITE.primary_color|default:'#000000' }};
+      --text: {{ SITE.text_color|default:'#eaeaea' }};
       --ink: #050505;
       --ink-2: #0d0d0d;
       --ink-3: #111111;
@@ -840,23 +820,24 @@
 
       <!-- Desktop Nav Links -->
       <ul class="nav-links" id="navLinks">
-        <li><a href="#programs">Programs</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#results">Results</a></li>
+        <li><a href="{% url 'home' %}#programs">Programs</a></li>
+        <li><a href="{% url 'home' %}#services">Services</a></li>
+        <li><a href="{% url 'home' %}#results">Results</a></li>
+        <li><a href="{% url 'events' %}">Events</a></li>
         {% if user.is_superuser %}
         <li><a href="{% url 'admin_dashboard' %}" class="admin-link"><i class="fa fa-gauge-high"
               style="font-size:11px;"></i> Dashboard</a></li>
         {% endif %}
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="{% url 'home' %}#contact">Contact</a></li>
       </ul>
 
       <!-- Desktop CTA -->
       <div class="nav-cta" id="navCta">
-        <a href="#contact" class="btn-gold">
+        <a href="{% url 'home' %}#contact" class="btn-gold">
           <span class="btn-shine"></span>
           Book Free Consultation →
         </a>
-        <a href="#programs" class="btn-outline">
+        <a href="{% url 'home' %}#programs" class="btn-outline">
           <span class="btn-shine"></span>
           Programs
         </a>
@@ -877,21 +858,27 @@
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <ul class="mobile-menu-links">
       <li>
-        <a href="#programs" class="mobile-nav-link">
+        <a href="{% url 'home' %}#programs" class="mobile-nav-link">
           <span class="mobile-icon"><i class="fa fa-graduation-cap"></i></span>
           Programs
         </a>
       </li>
       <li>
-        <a href="#services" class="mobile-nav-link">
+        <a href="{% url 'home' %}#services" class="mobile-nav-link">
           <span class="mobile-icon"><i class="fa fa-briefcase"></i></span>
           Services
         </a>
       </li>
       <li>
-        <a href="#results" class="mobile-nav-link">
+        <a href="{% url 'home' %}#results" class="mobile-nav-link">
           <span class="mobile-icon"><i class="fa fa-chart-line"></i></span>
           Results
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'events' %}" class="mobile-nav-link">
+          <span class="mobile-icon"><i class="fa fa-calendar"></i></span>
+          Events
         </a>
       </li>
       {% if user.is_superuser %}
@@ -903,15 +890,15 @@
       </li>
       {% endif %}
       <li>
-        <a href="#contact" class="mobile-nav-link">
+        <a href="{% url 'home' %}#contact" class="mobile-nav-link">
           <span class="mobile-icon"><i class="fa fa-envelope"></i></span>
           Contact
         </a>
       </li>
     </ul>
     <div class="mobile-cta">
-      <a href="#contact" class="btn-gold">Book Free Consultation →</a>
-      <a href="#programs" class="btn-outline">Explore Programs</a>
+      <a href="{% url 'home' %}#contact" class="btn-gold">Book Free Consultation →</a>
+      <a href="{% url 'home' %}#programs" class="btn-outline">Explore Programs</a>
     </div>
   </div>
 
@@ -964,11 +951,11 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <ul>
-          <li><a href="#programs">Signature Programs</a></li>
-          <li><a href="#services">What We Do</a></li>
-          <li><a href="#solutions">Solutions</a></li>
-          <li><a href="#results">Results & Proof</a></li>
-          <li><a href="#contact">Get In Touch</a></li>
+          <li><a href="{% url 'home' %}#programs">Signature Programs</a></li>
+          <li><a href="{% url 'home' %}#services">What We Do</a></li>
+          <li><a href="{% url 'home' %}#solutions">Solutions</a></li>
+          <li><a href="{% url 'home' %}#results">Results & Proof</a></li>
+          <li><a href="{% url 'home' %}#contact">Get In Touch</a></li>
         </ul>
       </div>
 
@@ -976,12 +963,12 @@
       <div class="footer-col">
         <h4>Services</h4>
         <ul>
-          <li><a href="#solutions">Creative & Branding</a></li>
-          <li><a href="#solutions">Video Editing</a></li>
-          <li><a href="#solutions">Digital Marketing</a></li>
-          <li><a href="#solutions">AI Automation</a></li>
-          <li><a href="#solutions">CRM Development</a></li>
-          <li><a href="#solutions">IVR Systems</a></li>
+          <li><a href="{% url 'home' %}#solutions">Creative & Branding</a></li>
+          <li><a href="{% url 'home' %}#solutions">Video Editing</a></li>
+          <li><a href="{% url 'home' %}#solutions">Digital Marketing</a></li>
+          <li><a href="{% url 'home' %}#solutions">AI Automation</a></li>
+          <li><a href="{% url 'home' %}#solutions">CRM Development</a></li>
+          <li><a href="{% url 'home' %}#solutions">IVR Systems</a></li>
         </ul>
       </div>
 
@@ -1017,7 +1004,7 @@
         <div class="footer-bottom-links">
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
-          <a href="#contact">Contact</a>
+          <a href="{% url 'home' %}#contact">Contact</a>
         </div>
       </div>
     </div>

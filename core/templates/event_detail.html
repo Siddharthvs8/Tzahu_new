@@ -1,0 +1,689 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* MAANG level styling for event detail */
+    .event-hero {
+        position: relative;
+        padding: 140px 20px 80px;
+        background: radial-gradient(circle at 70% -20%, rgba(245, 197, 24, 0.08) 0%, var(--ink) 70%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        min-height: 80vh;
+    }
+    
+    .event-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 60px;
+        align-items: flex-start;
+    }
+    
+    .event-content h1 {
+        font-family: var(--font-disp);
+        font-size: 72px;
+        color: var(--white);
+        line-height: 1.05;
+        margin-bottom: 28px;
+        letter-spacing: 0.02em;
+        text-wrap: balance;
+    }
+    
+    .event-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .meta-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(245, 197, 24, 0.05));
+        border: 1px solid rgba(245, 197, 24, 0.1);
+        color: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    
+    .event-desc {
+        color: var(--fog);
+        font-size: 18px;
+        line-height: 1.8;
+    }
+    .event-desc p {
+        margin-bottom: 20px;
+    }
+    
+    /* Pricing Card */
+    .pricing-card {
+        background: rgba(10, 10, 10, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 24px;
+        padding: 40px;
+        position: sticky;
+        top: 100px;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: 0 32px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    
+    .price-standard {
+        font-family: var(--font-disp);
+        font-size: 56px;
+        color: var(--white);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .price-strike {
+        font-size: 28px;
+        color: var(--ash);
+        text-decoration: line-through;
+        font-family: var(--font-body);
+        font-weight: 500;
+    }
+    
+    .early-bird-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--gold), #ff9900);
+        color: #000;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 8px 16px;
+        border-radius: 40px;
+        margin-bottom: 24px;
+    }
+    
+    .countdown-wrapper {
+        background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(245, 197, 24, 0.15);
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 24px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .countdown-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(245, 197, 24, 0.4), transparent);
+    }
+    
+    .countdown-title {
+        color: var(--gold);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        margin-bottom: 16px;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .countdown-timer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    
+    .cd-box {
+        flex: 1;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 10px;
+        padding: 16px 8px;
+        text-align: center;
+        box-shadow: inset 0 2px 0 rgba(255,255,255,0.02);
+    }
+    
+    .cd-num {
+        font-family: var(--font-mono);
+        font-size: 28px;
+        color: var(--white);
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 6px;
+        text-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+    
+    .cd-label {
+        font-size: 11px;
+        color: var(--fog);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    
+    .cta-btn {
+        display: block;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        background: var(--gold);
+        color: #000;
+        font-weight: 700;
+        font-size: 18px;
+        border-radius: 14px;
+        text-decoration: none;
+        transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-btn .shine {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+    
+    .cta-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(245, 197, 24, 0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    
+    .cta-btn:hover .shine {
+        transform: translateX(100%);
+    }
+
+    .cta-btn-secondary {
+        display: block;
+        width: 100%;
+        padding: 18px;
+        margin-top: 14px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-weight: 600;
+        font-size: 16px;
+        border-radius: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-family: var(--font-body);
+    }
+    .cta-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--gold);
+        color: var(--gold);
+        transform: translateY(-2px);
+    }
+
+    /* Modal Styles */
+    .brochure-modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .brochure-modal.show {
+        display: flex;
+        opacity: 1;
+    }
+    
+    .modal-content {
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 450px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 32px 64px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    
+    .brochure-modal.show .modal-content {
+        transform: scale(1);
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: var(--fog);
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    
+    .modal-close:hover {
+        color: var(--white);
+    }
+    
+    .modal-title {
+        font-family: var(--font-disp);
+        font-size: 32px;
+        color: var(--white);
+        margin-bottom: 12px;
+        text-align: center;
+        letter-spacing: 0.02em;
+    }
+    
+    .modal-subtitle {
+        color: var(--fog);
+        font-size: 14px;
+        margin-bottom: 30px;
+        text-align: center;
+        line-height: 1.5;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        color: var(--mist);
+        font-size: 12px;
+        font-family: var(--font-mono);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: var(--white);
+        font-size: 16px;
+        font-family: var(--font-body);
+        transition: border-color 0.3s, background-color 0.3s;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: var(--gold);
+        background: rgba(255, 255, 255, 0.06);
+    }
+    
+    .event-image-large {
+        width: 100%;
+        height: auto;
+        border-radius: 20px;
+        margin-bottom: 48px;
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+    
+    @media(max-width: 900px) {
+        .event-container {
+            grid-template-columns: 1fr;
+            gap: 48px;
+        }
+        .pricing-card {
+            position: relative;
+            top: 0;
+        }
+        .event-content h1 {
+            font-size: 52px;
+        }
+    }
+    @media(max-width: 480px) {
+        .event-content h1 {
+            font-size: 40px;
+        }
+        .cd-box {
+            padding: 12px 4px;
+        }
+        .cd-num {
+            font-size: 20px;
+        }
+        .meta-item {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="event-hero">
+    <div class="event-container">
+        
+        <div class="event-content">
+            <a href="{% url 'events' %}" style="display:inline-flex; align-items:center; gap:8px; color:var(--mist); text-decoration:none; margin-bottom:32px; font-size:15px; font-weight:500; transition:color 0.3s; padding:8px 16px; background:rgba(255,255,255,0.03); border-radius:40px; border:1px solid rgba(255,255,255,0.05);">
+                <i class="fa fa-arrow-left" style="font-size:12px;"></i> Back to Events
+            </a>
+            
+            <h1>{{ event.title }}</h1>
+            
+            <div class="event-meta">
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fa fa-calendar-day"></i></div>
+                    <div>
+                        <div style="color:var(--white); font-weight:600; font-size:16px;">{{ event.date|date:"l, F j, Y" }}</div>
+                        <div style="color:var(--fog); font-size:14px; margin-top:4px;">{{ event.date|time:"g:i A" }}</div>
+                    </div>
+                </div>
+                {% if event.location %}
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fa fa-map-pin"></i></div>
+                    <div>
+                        <div style="color:var(--white); font-weight:600; font-size:16px;">Location</div>
+                        <div style="color:var(--fog); font-size:14px; margin-top:4px;">{{ event.location }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if event.image %}
+                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image-large">
+            {% endif %}
+            
+            <div class="event-desc">
+                <h3 style="font-family:var(--font-disp); font-size:36px; color:var(--white); margin-bottom:28px; letter-spacing:0.02em;">About This Event</h3>
+                {% if event.detailed_description %}
+                    {{ event.detailed_description|linebreaks }}
+                {% else %}
+                    {{ event.description|linebreaks }}
+                {% endif %}
+            </div>
+            
+            {% if event.speakers.all %}
+            <div class="speakers-section" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.06);">
+                <h3 style="font-family:var(--font-disp); font-size:36px; color:var(--white); margin-bottom:32px; letter-spacing:0.02em;">Meet the Speakers</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                    {% for speaker in event.speakers.all %}
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s, background 0.3s; position: relative; overflow: hidden;">
+                        {% if speaker.linkedin_url %}
+                        <a href="{{ speaker.linkedin_url }}" target="_blank" rel="noopener" style="position: absolute; top: 16px; right: 16px; color: var(--fog); transition: color 0.3s; font-size: 18px;">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        
+                        <div style="width: 120px; height: 120px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, var(--gold), transparent); margin-bottom: 20px;">
+                            <div style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--ink-2);">
+                                {% if speaker.image %}
+                                <img src="{{ speaker.image.url }}" alt="{{ speaker.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--mist); font-size: 40px;">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <h4 style="font-family: var(--font-disp); font-size: 24px; color: var(--white); margin-bottom: 4px; letter-spacing: 0.02em;">{{ speaker.name }}</h4>
+                        <div style="color: var(--gold); font-size: 14px; font-weight: 500; margin-bottom: 12px;">
+                            {{ speaker.role }}{% if speaker.role and speaker.company %} at {% endif %}{{ speaker.company }}
+                        </div>
+                        
+                        {% if speaker.bio %}
+                        <p style="color: var(--fog); font-size: 14px; line-height: 1.6; margin-bottom: 0;">
+                            {{ speaker.bio|truncatewords:20 }}
+                        </p>
+                        {% endif %}
+                        
+                        <style>
+                            .speakers-section > div > div:hover {
+                                transform: translateY(-4px);
+                                background: rgba(255,255,255,0.04);
+                                border-color: rgba(245, 197, 24, 0.2) !important;
+                            }
+                            .speakers-section > div > div:hover a {
+                                color: #0a66c2 !important; /* LinkedIn Blue */
+                            }
+                        </style>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="pricing-card">
+            <h3 style="font-family:var(--font-mono); font-size:12px; color:var(--mist); margin-bottom:24px; letter-spacing:0.15em; text-transform:uppercase;">Registration</h3>
+            
+            {% if event.early_bird_deadline and event.early_bird_price %}
+                <div id="pricing-display">
+                    <div class="early-bird-badge"><i class="fa fa-bolt" style="color:#000;"></i> Early Bird Active</div>
+                    <div class="price-standard">
+                        <span class="price-strike">₹{{ event.price|floatformat:0 }}</span>
+                        ₹{{ event.early_bird_price|floatformat:0 }}
+                    </div>
+                </div>
+                
+                <div class="countdown-wrapper" id="countdown-wrapper">
+                    <div class="countdown-title">Offer ends in</div>
+                    <div class="countdown-timer">
+                        <div class="cd-box"><div class="cd-num" id="cd-d">00</div><div class="cd-label">Days</div></div>
+                        <div class="cd-box"><div class="cd-num" id="cd-h">00</div><div class="cd-label">Hours</div></div>
+                        <div class="cd-box"><div class="cd-num" id="cd-m">00</div><div class="cd-label">Mins</div></div>
+                        <div class="cd-box"><div class="cd-num" id="cd-s">00</div><div class="cd-label">Secs</div></div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="price-standard">
+                    {% if event.price > 0 %}
+                        ₹{{ event.price|floatformat:0 }}
+                    {% else %}
+                        Free
+                    {% endif %}
+                </div>
+                <div style="height: 32px;"></div>
+            {% endif %}
+            
+            <a href="{% url 'home' %}#contact" class="cta-btn">
+                <span class="shine"></span>
+                Secure Your Spot
+            </a>
+            
+            {% if event.brochure %}
+            <button type="button" class="cta-btn-secondary" id="open-brochure-modal">
+                <i class="fa fa-file-download" style="margin-right: 8px;"></i> Download Brochure
+            </button>
+            {% endif %}
+            
+            <p style="text-align:center; color:var(--fog); font-size:14px; margin-top:20px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i class="fa fa-shield-alt" style="color:var(--gold);"></i> Safe & secure checkout
+            </p>
+        </div>
+        
+    </div>
+</div>
+
+{% if event.early_bird_deadline %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deadlineStr = "{{ event.early_bird_deadline|date:'c' }}"; 
+        if(!deadlineStr) return;
+        
+        const deadline = new Date(deadlineStr).getTime();
+        const countdownWrapper = document.getElementById('countdown-wrapper');
+        const pricingDisplay = document.getElementById('pricing-display');
+        
+        const standardPriceHtml = `
+            <div class="price-standard" style="margin-bottom: 24px;">
+                {% if event.price > 0 %}₹{{ event.price|floatformat:0 }}{% else %}Free{% endif %}
+            </div>
+            <p style="color:var(--fog); margin-bottom:24px; font-size:14px; background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; border-left:3px solid var(--fog);">Early bird offer has expired.</p>
+        `;
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = deadline - now;
+            
+            if (diff < 0) {
+                if(countdownWrapper) countdownWrapper.style.display = 'none';
+                if(pricingDisplay) pricingDisplay.innerHTML = standardPriceHtml;
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('cd-d').innerText = days.toString().padStart(2, '0');
+            document.getElementById('cd-h').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('cd-m').innerText = mins.toString().padStart(2, '0');
+            document.getElementById('cd-s').innerText = secs.toString().padStart(2, '0');
+        }
+        
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    });
+</script>
+{% endif %}
+
+{% if event.brochure %}
+<!-- Brochure Download Modal -->
+<div id="brochure-modal" class="brochure-modal">
+    <div class="modal-content">
+        <span class="modal-close" id="close-brochure-modal">&times;</span>
+        <h3 class="modal-title">Download Brochure</h3>
+        <p class="modal-subtitle">Enter your name and phone number to get instant access to the event brochure.</p>
+        
+        <form id="brochure-form" method="POST" action="{% url 'download_brochure' event.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="lead-name">Full Name</label>
+                <input class="form-input" type="text" id="lead-name" name="name" required placeholder="e.g. John Doe">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label class="form-label" for="lead-phone">Phone Number</label>
+                <input class="form-input" type="tel" id="lead-phone" name="phone" required placeholder="e.g. +91 98765 43210">
+            </div>
+            
+            <button type="submit" class="cta-btn" id="submit-brochure-btn">
+                <span class="shine"></span>
+                Get Brochure
+            </button>
+        </form>
+        <div id="download-success-msg" style="display: none; text-align: center; color: var(--gold); font-family: var(--font-body); font-size: 16px; margin-top: 20px;">
+            <i class="fa fa-check-circle" style="font-size: 32px; display: block; margin-bottom: 12px;"></i>
+            Thank you! Your download has started.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById('brochure-modal');
+        const openBtn = document.getElementById('open-brochure-modal');
+        const closeBtn = document.getElementById('close-brochure-modal');
+        const form = document.getElementById('brochure-form');
+        const successMsg = document.getElementById('download-success-msg');
+        const submitBtn = document.getElementById('submit-brochure-btn');
+
+        if (openBtn && modal) {
+            openBtn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+            });
+        }
+
+        if (closeBtn && modal) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Close modal when clicking outside content
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                // Reset form on close
+                form.style.display = 'block';
+                successMsg.style.display = 'none';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Get Brochure";
+                }
+                form.reset();
+            }, 300);
+        }
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Processing...";
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Show success state
+                        form.style.display = 'none';
+                        successMsg.style.display = 'block';
+
+                        // Create download link and trigger click
+                        const link = document.createElement('a');
+                        link.href = data.brochure_url;
+                        link.setAttribute('download', '');
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        // Automatically close modal after 3 seconds
+                        setTimeout(closeModal, 3000);
+                    } else {
+                        alert(data.message || 'An error occurred. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Get Brochure";
+                    }
+                })
+                .catch(err => {
+                    console.error('Error submitting brochure lead:', err);
+                    alert('Connection error. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Get Brochure";
+                });
+            });
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}
