@@ -664,16 +664,56 @@
   /* ─────────────────────────────────────────
      CAROUSEL (Enhanced)
   ───────────────────────────────────────── */
+  /* 3D perspective stage that holds the carousel frame */
+  .carousel-stage {
+    perspective: 1600px;
+    perspective-origin: center;
+    position: relative;
+  }
+  /* Ambient glow that lives BEHIND the carousel and intensifies on hover */
+  .carousel-stage::before {
+    content: '';
+    position: absolute;
+    inset: -60px -40px;
+    background:
+      radial-gradient(60% 70% at 30% 20%, rgba(245,197,24,.18), transparent 60%),
+      radial-gradient(50% 60% at 80% 90%, rgba(245,197,24,.12), transparent 60%);
+    filter: blur(40px);
+    opacity: 0;
+    transform: scale(.92);
+    transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .carousel-stage.is-hovering::before { opacity: 1; transform: scale(1); }
+
   .carousel-outer {
     position: relative; overflow: hidden;
     border-radius: var(--radius-md);
     box-shadow: 0 40px 100px rgba(0,0,0,.7);
     border: 1px solid rgba(255,255,255,.05);
+    transform-style: preserve-3d;
+    transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .45s;
+    will-change: transform;
+    z-index: 1;
+  }
+  .carousel-stage.is-hovering .carousel-outer {
+    border-color: rgba(245,197,24,.28);
+    box-shadow:
+      0 60px 140px rgba(0,0,0,.8),
+      0 0 0 1px rgba(245,197,24,.12),
+      0 30px 80px rgba(245,197,24,.18);
   }
   .carousel-track-inner { display: flex; transition: transform .7s var(--ease-out); }
-  .carousel-track-inner .slide { min-width: 100%; position: relative; }
+  .carousel-track-inner .slide { min-width: 100%; position: relative; overflow: hidden; }
   .carousel-track-inner .slide img {
     width: 100%; height: 520px; object-fit: cover; display: block;
+    transition: transform .9s var(--ease-out), filter .6s;
+    transform: scale(1.001);
+  }
+  .carousel-stage.is-hovering .carousel-track-inner .slide img {
+    transform: scale(1.08);
+    filter: saturate(1.12) contrast(1.04);
   }
   /* Gradient overlay on slides */
   .carousel-track-inner .slide::after {
@@ -681,6 +721,33 @@
     position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(5,5,5,.6) 0%, transparent 50%);
     pointer-events: none;
+  }
+  /* Cursor-tracking light glare swept across the frame on hover */
+  .carousel-glare {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity .4s var(--ease-out);
+    background: radial-gradient(
+      260px circle at var(--gx, 50%) var(--gy, 50%),
+      rgba(255,255,255,.22),
+      rgba(245,197,24,.06) 40%,
+      transparent 70%
+    );
+    mix-blend-mode: soft-light;
+  }
+  .carousel-stage.is-hovering .carousel-glare { opacity: 1; }
+  /* Inner gold edge that lights up on hover */
+  .carousel-edge {
+    position: absolute; inset: 0;
+    pointer-events: none; z-index: 9;
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 0 0 1px rgba(245,197,24,0);
+    transition: box-shadow .45s var(--ease-out);
+  }
+  .carousel-stage.is-hovering .carousel-edge {
+    box-shadow: inset 0 0 60px rgba(245,197,24,.12), inset 0 0 0 1px rgba(245,197,24,.25);
   }
   .nav-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
@@ -1234,18 +1301,25 @@
       <h2 class="section-title">What it looks like <em>in action</em></h2>
       <div class="gold-line"></div>
     </div>
-    <div class="carousel-outer reveal reveal-delay-1">
-      <div class="carousel-track-inner" id="carTrack">
-        {% for s in slides %}
-          <div class="slide"><img src="{{ s.image.url }}" alt="{{ s.alt_text|default:'Slide' }}"/></div>
-        {% empty %}
-          <div class="slide" style="min-width:100%; height:380px; display:flex; align-items:center; justify-content:center; background:var(--ink-3); color:var(--fog); font-family:var(--font-mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase;">
-            ✦ No slides yet — upload in admin ✦
-          </div>
-        {% endfor %}
+    <div class="carousel-stage reveal reveal-delay-1" id="carStage">
+      <div class="carousel-outer" id="carOuter">
+        <div class="carousel-track-inner" id="carTrack">
+          {% for s in slides %}
+            <div class="slide">
+              <img src="{{ s.image.url }}" alt="{{ s.alt_text|default:'Slide' }}"/>
+              {% if s.caption %}<div class="caption">{{ s.caption }}</div>{% endif %}
+            </div>
+          {% empty %}
+            <div class="slide" style="min-width:100%; height:380px; display:flex; align-items:center; justify-content:center; background:var(--ink-3); color:var(--fog); font-family:var(--font-mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase;">
+              ✦ No slides yet — upload in admin ✦
+            </div>
+          {% endfor %}
+        </div>
+        <div class="carousel-glare" id="carGlare"></div>
+        <div class="carousel-edge"></div>
+        <button class="nav-btn prev" id="carPrev" aria-label="Previous">‹</button>
+        <button class="nav-btn next" id="carNext" aria-label="Next">›</button>
       </div>
-      <button class="nav-btn prev" id="carPrev" aria-label="Previous">‹</button>
-      <button class="nav-btn next" id="carNext" aria-label="Next">›</button>
     </div>
     <div class="dots-strip" id="carDots"></div>
   </div>
@@ -1607,6 +1681,39 @@
     if (outer) {
       outer.addEventListener('mouseenter', stopAuto);
       outer.addEventListener('mouseleave', startAuto);
+    }
+
+    /* ── 3D ELEVATION + CURSOR SPOTLIGHT on the carousel ── */
+    const stage = document.getElementById('carStage');
+    const glare = document.getElementById('carGlare');
+    const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (stage && outer && isFinePointer) {
+      let raf = null, tX = 0, tY = 0;
+      function render() {
+        raf = null;
+        outer.style.transform =
+          'translateY(-10px) perspective(1600px) rotateX(' + tY + 'deg) rotateY(' + tX + 'deg) scale(1.012)';
+      }
+      stage.addEventListener('mouseenter', function() {
+        stage.classList.add('is-hovering');
+      });
+      stage.addEventListener('mousemove', function(e) {
+        const rect = outer.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;   // 0..1
+        const py = (e.clientY - rect.top)  / rect.height;  // 0..1
+        tX = (px - 0.5) * 14;    // rotateY
+        tY = (0.5 - py) * 10;    // rotateX
+        if (glare) {
+          glare.style.setProperty('--gx', (px * 100) + '%');
+          glare.style.setProperty('--gy', (py * 100) + '%');
+        }
+        if (!raf) raf = requestAnimationFrame(render);
+      });
+      stage.addEventListener('mouseleave', function() {
+        stage.classList.remove('is-hovering');
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        outer.style.transform = '';
+      });
     }
 
     // Touch/swipe

@@ -344,6 +344,176 @@
         border: 1px solid rgba(255,255,255,0.06);
         box-shadow: 0 24px 64px rgba(0,0,0,0.6);
     }
+
+    /* ─────────── SPEAKERS ─────────── */
+    .speakers-section {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .speakers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 24px;
+    }
+    .speaker-card {
+        appearance: none;
+        font-family: var(--font-body);
+        background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px;
+        padding: 28px 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out), border-color 0.45s;
+        will-change: transform;
+    }
+    .speaker-card::before {
+        content: '';
+        position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(245,197,24,0.5), transparent);
+        opacity: 0; transition: opacity 0.45s;
+    }
+    .speaker-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(245,197,24,0.28);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(245,197,24,0.08);
+    }
+    .speaker-card:hover::before { opacity: 1; }
+    .speaker-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .speaker-shine {
+        position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(115deg, transparent 40%, rgba(245,197,24,0.10) 50%, transparent 60%);
+        transform: translateX(-120%);
+        transition: transform 0.7s var(--ease-out);
+    }
+    .speaker-card:hover .speaker-shine { transform: translateX(120%); }
+    .speaker-li {
+        position: absolute; top: 14px; right: 14px;
+        color: var(--fog); font-size: 18px; transition: color 0.3s, transform 0.3s;
+        z-index: 2;
+    }
+    .speaker-card:hover .speaker-li { color: #0a66c2; transform: scale(1.15); }
+    .speaker-avatar {
+        width: 116px; height: 116px; border-radius: 50%;
+        padding: 3px;
+        background: conic-gradient(from 180deg, var(--gold), rgba(245,197,24,0.15), var(--gold));
+        margin-bottom: 18px;
+        transition: transform 0.5s var(--ease-out), box-shadow 0.5s;
+        display: block;
+    }
+    .speaker-card:hover .speaker-avatar {
+        transform: scale(1.06);
+        box-shadow: 0 0 28px rgba(245,197,24,0.3);
+    }
+    .speaker-avatar-inner {
+        width: 100%; height: 100%; border-radius: 50%;
+        overflow: hidden; background: var(--ink-2);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .speaker-avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .speaker-avatar-ph { color: var(--mist); font-size: 40px; }
+    .speaker-name {
+        font-family: var(--font-disp); font-size: 23px; color: var(--white);
+        letter-spacing: 0.02em; margin-bottom: 4px;
+    }
+    .speaker-role { color: var(--gold); font-size: 13.5px; font-weight: 500; margin-bottom: 12px; }
+    .speaker-bio-preview { color: var(--fog); font-size: 13.5px; line-height: 1.6; margin-bottom: 16px; }
+    .speaker-view {
+        margin-top: auto;
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--gold);
+        padding: 7px 16px; border-radius: 40px;
+        border: 1px solid rgba(245,197,24,0.2); background: rgba(245,197,24,0.05);
+        transition: gap 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .speaker-card:hover .speaker-view { gap: 12px; background: rgba(245,197,24,0.12); border-color: rgba(245,197,24,0.4); }
+
+    /* ─────────── SPEAKER MODAL ─────────── */
+    .speaker-modal {
+        display: none;
+        position: fixed; inset: 0; z-index: 1100;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        align-items: center; justify-content: center;
+        padding: 24px;
+        opacity: 0; transition: opacity 0.35s ease;
+    }
+    .speaker-modal.show { display: flex; opacity: 1; }
+    .speaker-modal-card {
+        position: relative;
+        background: linear-gradient(160deg, rgba(18,18,18,0.96), rgba(8,8,8,0.96));
+        border: 1px solid rgba(245,197,24,0.18);
+        border-radius: 26px;
+        padding: 44px 40px 40px;
+        max-width: 560px; width: 100%;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        transform: translateY(24px) scale(0.94);
+        opacity: 0;
+        transition: transform 0.5s var(--ease-out), opacity 0.5s var(--ease-out);
+        overflow: hidden;
+    }
+    .speaker-modal.show .speaker-modal-card { transform: translateY(0) scale(1); opacity: 1; }
+    .speaker-modal-glow {
+        position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+        width: 360px; height: 360px; pointer-events: none;
+        background: radial-gradient(circle, rgba(245,197,24,0.16), transparent 65%);
+    }
+    .speaker-modal-close {
+        position: absolute; top: 18px; right: 20px;
+        background: none; border: none; color: var(--fog);
+        font-size: 30px; line-height: 1; cursor: pointer; z-index: 3;
+        transition: color 0.3s, transform 0.3s;
+    }
+    .speaker-modal-close:hover { color: var(--white); transform: rotate(90deg); }
+    .speaker-modal-head {
+        display: flex; align-items: center; gap: 24px; margin-bottom: 28px;
+        position: relative; z-index: 2;
+    }
+    .speaker-modal-avatar {
+        width: 110px; height: 110px; flex-shrink: 0; border-radius: 50%;
+        padding: 3px;
+        background: conic-gradient(from 180deg, var(--gold), rgba(245,197,24,0.2), var(--gold));
+        box-shadow: 0 0 30px rgba(245,197,24,0.25);
+    }
+    .speaker-modal-avatar-inner {
+        width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+        background: var(--ink-2); display: flex; align-items: center; justify-content: center;
+        color: var(--mist); font-size: 40px;
+    }
+    .speaker-modal-avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .speaker-modal-name {
+        font-family: var(--font-disp); font-size: 34px; color: var(--white);
+        letter-spacing: 0.02em; line-height: 1.05; margin-bottom: 6px;
+    }
+    .speaker-modal-role { color: var(--gold); font-size: 15px; font-weight: 500; margin-bottom: 12px; }
+    .speaker-modal-li {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-size: 13px; color: var(--mist); text-decoration: none;
+        padding: 7px 14px; border-radius: 40px;
+        border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+        transition: color 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .speaker-modal-li:hover { color: #fff; background: #0a66c2; border-color: #0a66c2; }
+    .speaker-modal-li.hidden { display: none; }
+    .speaker-modal-bio {
+        color: var(--mist); font-size: 15.5px; line-height: 1.8;
+        position: relative; z-index: 2;
+        max-height: 40vh; overflow-y: auto;
+        white-space: pre-line;
+    }
+    .speaker-modal-bio:empty { display: none; }
+    @media (max-width: 520px) {
+        .speaker-modal-head { flex-direction: column; text-align: center; gap: 16px; }
+        .speaker-modal-name { font-size: 28px; }
+        .speaker-modal-card { padding: 38px 24px 30px; }
+    }
     
     @media(max-width: 900px) {
         .event-container {
@@ -404,10 +574,10 @@
             </div>
             
             {% if event.image %}
-                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image-large">
+                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image-large" data-reveal="scale">
             {% endif %}
-            
-            <div class="event-desc">
+
+            <div class="event-desc" data-reveal>
                 <h3 style="font-family:var(--font-disp); font-size:36px; color:var(--white); margin-bottom:28px; letter-spacing:0.02em;">About This Event</h3>
                 {% if event.detailed_description %}
                     {{ event.detailed_description|linebreaks }}
@@ -417,58 +587,70 @@
             </div>
             
             {% if event.speakers.all %}
-            <div class="speakers-section" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.06);">
-                <h3 style="font-family:var(--font-disp); font-size:36px; color:var(--white); margin-bottom:32px; letter-spacing:0.02em;">Meet the Speakers</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+            <div class="speakers-section" data-reveal>
+                <h3 style="font-family:var(--font-disp); font-size:36px; color:var(--white); margin-bottom:8px; letter-spacing:0.02em;">Meet the Speakers</h3>
+                <p style="color:var(--fog); font-size:15px; margin-bottom:32px;">Tap a speaker to view their full profile.</p>
+                <div class="speakers-grid">
                     {% for speaker in event.speakers.all %}
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s, background 0.3s; position: relative; overflow: hidden;">
+                    <button type="button" class="speaker-card"
+                        data-name="{{ speaker.name|escape }}"
+                        data-role="{{ speaker.role|escape }}"
+                        data-company="{{ speaker.company|escape }}"
+                        data-bio="{{ speaker.bio|escape }}"
+                        data-image="{% if speaker.image %}{{ speaker.image.url }}{% endif %}"
+                        data-linkedin="{{ speaker.linkedin_url|escape }}">
+                        <span class="speaker-shine"></span>
                         {% if speaker.linkedin_url %}
-                        <a href="{{ speaker.linkedin_url }}" target="_blank" rel="noopener" style="position: absolute; top: 16px; right: 16px; color: var(--fog); transition: color 0.3s; font-size: 18px;">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
+                        <span class="speaker-li"><i class="fab fa-linkedin"></i></span>
                         {% endif %}
-                        
-                        <div style="width: 120px; height: 120px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, var(--gold), transparent); margin-bottom: 20px;">
-                            <div style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--ink-2);">
+
+                        <span class="speaker-avatar">
+                            <span class="speaker-avatar-inner">
                                 {% if speaker.image %}
-                                <img src="{{ speaker.image.url }}" alt="{{ speaker.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="{{ speaker.image.url }}" alt="{{ speaker.name }}">
                                 {% else %}
-                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--mist); font-size: 40px;">
-                                    <i class="fa fa-user"></i>
-                                </div>
+                                <span class="speaker-avatar-ph"><i class="fa fa-user"></i></span>
                                 {% endif %}
-                            </div>
-                        </div>
-                        
-                        <h4 style="font-family: var(--font-disp); font-size: 24px; color: var(--white); margin-bottom: 4px; letter-spacing: 0.02em;">{{ speaker.name }}</h4>
-                        <div style="color: var(--gold); font-size: 14px; font-weight: 500; margin-bottom: 12px;">
+                            </span>
+                        </span>
+
+                        <span class="speaker-name">{{ speaker.name }}</span>
+                        <span class="speaker-role">
                             {{ speaker.role }}{% if speaker.role and speaker.company %} at {% endif %}{{ speaker.company }}
-                        </div>
-                        
+                        </span>
                         {% if speaker.bio %}
-                        <p style="color: var(--fog); font-size: 14px; line-height: 1.6; margin-bottom: 0;">
-                            {{ speaker.bio|truncatewords:20 }}
-                        </p>
+                        <span class="speaker-bio-preview">{{ speaker.bio|truncatewords:16 }}</span>
                         {% endif %}
-                        
-                        <style>
-                            .speakers-section > div > div:hover {
-                                transform: translateY(-4px);
-                                background: rgba(255,255,255,0.04);
-                                border-color: rgba(245, 197, 24, 0.2) !important;
-                            }
-                            .speakers-section > div > div:hover a {
-                                color: #0a66c2 !important; /* LinkedIn Blue */
-                            }
-                        </style>
-                    </div>
+                        <span class="speaker-view">View Profile <i class="fa fa-arrow-right"></i></span>
+                    </button>
                     {% endfor %}
+                </div>
+            </div>
+
+            <!-- Speaker Profile Modal -->
+            <div id="speaker-modal" class="speaker-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sp-name">
+                <div class="speaker-modal-card">
+                    <span class="speaker-modal-glow"></span>
+                    <button type="button" class="speaker-modal-close" id="speaker-modal-close" aria-label="Close">&times;</button>
+                    <div class="speaker-modal-head">
+                        <div class="speaker-modal-avatar">
+                            <div class="speaker-modal-avatar-inner" id="sp-avatar"></div>
+                        </div>
+                        <div class="speaker-modal-headtext">
+                            <h3 class="speaker-modal-name" id="sp-name"></h3>
+                            <div class="speaker-modal-role" id="sp-role"></div>
+                            <a href="#" target="_blank" rel="noopener" class="speaker-modal-li" id="sp-linkedin">
+                                <i class="fab fa-linkedin"></i> Connect on LinkedIn
+                            </a>
+                        </div>
+                    </div>
+                    <div class="speaker-modal-bio" id="sp-bio"></div>
                 </div>
             </div>
             {% endif %}
         </div>
         
-        <div class="pricing-card">
+        <div class="pricing-card" data-reveal="right">
             <h3 style="font-family:var(--font-mono); font-size:12px; color:var(--mist); margin-bottom:24px; letter-spacing:0.15em; text-transform:uppercase;">Registration</h3>
             
             {% if event.early_bird_deadline and event.early_bird_price %}
@@ -683,6 +865,85 @@
                 });
             });
         }
+    });
+</script>
+{% endif %}
+
+{% if event.speakers.all %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const modal     = document.getElementById('speaker-modal');
+        if (!modal) return;
+        const closeBtn  = document.getElementById('speaker-modal-close');
+        const avatarBox = document.getElementById('sp-avatar');
+        const nameEl    = document.getElementById('sp-name');
+        const roleEl    = document.getElementById('sp-role');
+        const bioEl     = document.getElementById('sp-bio');
+        const liEl      = document.getElementById('sp-linkedin');
+        let lastFocused = null;
+
+        function openModal(card) {
+            lastFocused = card;
+            const name     = card.dataset.name || '';
+            const role     = card.dataset.role || '';
+            const company  = card.dataset.company || '';
+            const bio      = card.dataset.bio || '';
+            const image    = card.dataset.image || '';
+            const linkedin = card.dataset.linkedin || '';
+
+            nameEl.textContent = name;
+            let roleLine = role;
+            if (role && company) roleLine = role + ' at ' + company;
+            else if (company)    roleLine = company;
+            roleEl.textContent = roleLine;
+            roleEl.style.display = roleLine ? '' : 'none';
+
+            bioEl.textContent = bio;
+
+            if (image) {
+                avatarBox.innerHTML = '<img src="' + image + '" alt="' + name.replace(/"/g, '&quot;') + '">';
+            } else {
+                avatarBox.innerHTML = '<i class="fa fa-user"></i>';
+            }
+
+            if (linkedin) {
+                liEl.href = linkedin;
+                liEl.classList.remove('hidden');
+            } else {
+                liEl.classList.add('hidden');
+            }
+
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('show'));
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            closeBtn.focus();
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            setTimeout(() => { modal.style.display = 'none'; }, 350);
+            if (lastFocused) lastFocused.focus();
+        }
+
+        document.querySelectorAll('.speaker-card').forEach(function(card) {
+            card.addEventListener('click', function() { openModal(card); });
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+        });
+
+        // Don't let a click on the LinkedIn badge inside a card open the modal too
+        document.querySelectorAll('.speaker-card .speaker-li').forEach(function(badge) {
+            // badge is decorative inside button; clicks still open modal (intended)
+        });
     });
 </script>
 {% endif %}
