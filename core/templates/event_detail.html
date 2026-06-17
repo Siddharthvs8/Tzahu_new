@@ -23,11 +23,11 @@
     
     .event-content h1 {
         font-family: var(--font-disp);
-        font-size: 72px;
+        font-size: clamp(40px, 6vw, 64px);
         color: var(--white);
-        line-height: 1.05;
+        line-height: 1.06;
         margin-bottom: 28px;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.015em;
         text-wrap: balance;
     }
     
@@ -60,12 +60,25 @@
     }
     
     .event-desc {
-        color: var(--fog);
-        font-size: 18px;
-        line-height: 1.8;
+        color: var(--mist);
+        font-size: clamp(16px, 1.15vw, 17.5px);
+        line-height: 1.75;
+        letter-spacing: 0.003em;
+        max-width: 68ch;
+        word-spacing: 0.02em;
     }
     .event-desc p {
-        margin-bottom: 20px;
+        margin-bottom: 1.4em;
+    }
+    .event-desc p:last-child {
+        margin-bottom: 0;
+    }
+    .event-desc strong, .event-desc b {
+        color: var(--white);
+        font-weight: 600;
+    }
+    .event-desc h3 {
+        font-size: clamp(26px, 3vw, 34px) !important;
     }
     
     /* Pricing Card */
@@ -524,14 +537,8 @@
             position: relative;
             top: 0;
         }
-        .event-content h1 {
-            font-size: 52px;
-        }
     }
     @media(max-width: 480px) {
-        .event-content h1 {
-            font-size: 40px;
-        }
         .cd-box {
             padding: 12px 4px;
         }

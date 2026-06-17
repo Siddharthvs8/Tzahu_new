@@ -58,7 +58,7 @@ class EventAdmin(admin.ModelAdmin):
     filter_horizontal = ('speakers',)
     fieldsets = (
         (None, {
-            'fields': ('title', 'description', 'detailed_description', 'date', 'location', 'image', 'speakers', 'brochure')
+            'fields': ('title', 'description', 'detailed_description', 'date', 'location', 'thumbnail', 'image', 'speakers', 'brochure')
         }),
         ('Pricing & Offers', {
             'fields': ('price', 'early_bird_price', 'early_bird_deadline')

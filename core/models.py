@@ -130,7 +130,8 @@ class Event(models.Model):
     detailed_description = models.TextField(blank=True, help_text="Detailed information about the event.")
     date = models.DateTimeField()
     location = models.CharField(max_length=200, blank=True)
-    image = models.ImageField(upload_to='events/', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='events/', blank=True, null=True, help_text="Thumbnail shown on the events listing cards. Use a smaller, well-cropped image. Falls back to the main image if empty.")
+    image = models.ImageField(upload_to='events/', blank=True, null=True, help_text="Main banner image shown on the event detail page.")
     
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Standard price. Set to 0 for free events.")
     early_bird_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Discounted early bird price.")

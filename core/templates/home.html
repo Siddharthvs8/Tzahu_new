@@ -970,6 +970,76 @@
     50%{ opacity: .5; transform: scale(.7); }
   }
 
+  /* ── "NEW EVENTS AVAILABLE" ANNOUNCEMENT PILL ── */
+  .events-announce {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 8px 10px 8px 18px;
+    border-radius: 40px;
+    background: rgba(245,197,24,.08);
+    border: 1px solid rgba(245,197,24,.28);
+    backdrop-filter: blur(12px);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 13.5px; font-weight: 500;
+    color: var(--white);
+    margin-bottom: 24px;
+    position: relative; overflow: hidden;
+    opacity: 0; transform: translateY(14px);
+    animation: announceIn .7s var(--ease-out) .2s forwards;
+    transition: border-color .35s, background .35s, transform .35s var(--ease);
+  }
+  .events-announce:hover {
+    border-color: rgba(245,197,24,.55);
+    background: rgba(245,197,24,.13);
+    transform: translateY(-2px);
+  }
+  .events-announce::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(245,197,24,.18) 50%, transparent 60%);
+    transform: translateX(-120%);
+    animation: announceShine 3.2s ease-in-out infinite;
+  }
+  .events-announce .ea-live {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--gold);
+  }
+  .events-announce .ea-dot {
+    position: relative; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--gold);
+  }
+  .events-announce .ea-dot::after {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; background: var(--gold);
+    animation: eaPulse 1.8s var(--ease-out) infinite;
+  }
+  .events-announce .ea-sep {
+    width: 1px; height: 16px; background: rgba(245,197,24,.25);
+  }
+  .events-announce .ea-arrow {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--gold); color: #111; font-size: 12px;
+    transition: transform .35s var(--ease);
+  }
+  .events-announce:hover .ea-arrow { transform: translateX(3px); }
+  @keyframes eaPulse {
+    0% { transform: scale(1); opacity: .7; }
+    70%,100% { transform: scale(3); opacity: 0; }
+  }
+  @keyframes announceShine {
+    0% { transform: translateX(-120%); }
+    60%,100% { transform: translateX(120%); }
+  }
+  @keyframes announceIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .events-announce { animation: none; opacity: 1; transform: none; }
+    .events-announce::before, .events-announce .ea-dot::after { animation: none; }
+  }
+
   /* Main headline */
   .hero-h1 {
     font-family: var(--font-disp);
@@ -1208,6 +1278,18 @@
 
   <!-- Main content -->
   <div class="hero-content">
+
+    {% if HAS_NEW_EVENTS %}
+    <!-- New events announcement -->
+    <div style="display:flex; justify-content:center;">
+      <a href="{% url 'events' %}" class="events-announce">
+        <span class="ea-live"><span class="ea-dot"></span>Live</span>
+        <span class="ea-sep"></span>
+        <span>{{ UPCOMING_EVENTS_COUNT }} new event{{ UPCOMING_EVENTS_COUNT|pluralize }} available</span>
+        <span class="ea-arrow"><i class="fa fa-arrow-right"></i></span>
+      </a>
+    </div>
+    {% endif %}
 
     <!-- Badge -->
     <div class="hero-badge reveal" style="margin-bottom:32px;">
